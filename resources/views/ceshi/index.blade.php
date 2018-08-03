@@ -1,0 +1,1 @@
+<a href="{{ route('ceshi.create')}}">进入测试页面</a>
