@@ -47,6 +47,22 @@ Route::get('/orderGoods_index_day', 'OrderGoodsController@index_day')->name('ord
 Route::resource('ceshi','CeshiController');
 Route::post('upload','CeshiController@upload')->name('upload');//文件图片接受服务端
 
+//抽奖活动表
+Route::resource('events','EventsController');
+Route::get('/prizes','EventsController@prizes')->name('prizes.index');//活动奖品列表
+Route::get('/prizes/create','EventsController@prizesCreate')->name('prizes.create');//添加活动奖品页面
+Route::post('/prizes','EventsController@prizesStore')->name('prizes.store');//添加活动奖品功能
+Route::get('/prizes/{prize}/edit','EventsController@prizesEdit')->name('prizes.edit');//修改活动奖品页面
+Route::patch('/prizes/{prize}','EventsController@prizesUpdate')->name('prizes.update');//修改活动奖品功能
+Route::delete('/prizes/{prize}','EventsController@prizesDestroy')->name('prizes.destroy');//删除活动奖品功能
+//活动奖品表
+Route::resource('eventPrizes','EventPrizesController');
+//活动报名表
+Route::resource('eventMembers','EventMembersController');
+Route::get('event_members','EventMembersController@store')->name('event_members.store');
+
+
+
 //文件接收服务端
 //Route::post('upload',function (){
 //    $storage = \Illuminate\Support\Facades\Storage::disk('oss');

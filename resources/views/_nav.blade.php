@@ -25,6 +25,9 @@
                         <li><a href="{{ route('menus.index') }}">菜品列表</a></li>
                         <li><a href="{{ route('orders.index') }}">订单列表</a></li>
                         <li><a href="{{ route('orderGoods.index') }}">订单商品列表</a></li>
+                        <li><a href="{{ route('events.index') }}">抽奖活动列表</a></li>
+                        <li><a href="{{ route('eventMembers.index') }}">活动报名列表</a></li>
+{{--                        <li><a href="{{ route('prizes.index') }}">活动奖品列表</a></li>--}}
                     </ul>
                 </li>
             </ul>
