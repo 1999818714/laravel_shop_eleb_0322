@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventMember;
 use App\Models\EventPrize;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class EventsController extends Controller
@@ -228,5 +230,62 @@ class EventsController extends Controller
         session()->flash('success','删除成功');
         return redirect()->route('prizes.index',['id'=>$request->id]);//跳转['id'=>$request->id]是为了保证是本活动
     }
+
+
+    //报名抽奖功能
+    public function eventMember(Request $request)
+    {
+        //获得活动ID
+        $event_id = $request->id;
+        //根据活动ID获得该活动报名的人的ID
+        $members = EventMember::where('events_id',$event_id)->get();
+        $member_id = [];//获得所有ID
+        foreach ($members as $member) {
+            $member_id[] = $member->id;
+        }
+        //获取该活动所有奖品id
+        $prizes = EventPrize::where('events_id',$event_id)->get();
+        $prizes_id = [];//获得所有ID
+        foreach ($prizes as $prize) {
+            $prizes_id[] = $prize->id;
+        }
+        //打乱数组
+        $new_member = shuffle($member_id);//打乱报名ID
+        $new_prizes = shuffle($prizes_id);//打乱奖品ID//这个函数打乱的是原来的数组，这里应该调用$prizes_id这个原数组
+        //遍历奖品(将所有奖品分配给报名人)
+        $result = [];//获取结果  奖品id=》商家账号id
+        foreach ($prizes_id as $k=>$prize) {
+            if (!isset($member_id[$k])) break;//当没有报名的人时，跳出抽奖
+            $result[$prize] = $member_id[$k];
+        }
+
+        //开启事务
+        DB::beginTransaction();
+        try{
+            //得到奖品，保存数据库
+            foreach ($result as $k=>$v){
+                $event_prizes = EventPrize::find($k);
+                $event_prizes->update([
+                    'member_id'=>$v
+                ]);
+            }
+            //抽奖成功时将活动改为已抽奖
+            $event = Event::find($event_id);
+            $event->update([
+                'is_prize'=>1
+            ]);
+                //提交事务
+                DB::commit();
+            session()->flash('success','抽奖成功');
+            return redirect()->route('events.index');
+        } catch (\Exception $ex) {
+            //回滚事务
+            DB::rollback();
+            //设置提示信息
+            session()->flash('danger', '抽奖失败');
+            return redirect()->route('events.index');//跳转到
+        }
+    }
+
 
 }

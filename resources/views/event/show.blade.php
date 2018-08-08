@@ -13,7 +13,7 @@
     <strong>添加时间: </strong><span style="color: #3097d1">{{ $event->created_at }}</span><br><br>
     <strong>修改时间: </strong><span style="color: #3097d1">{{ $event->updated_at }}</span><br><br>
 
-    {{--<a href="{{ route('events.edit',[$event]) }}" role="button" class="btn btn-primary">编辑</a>--}}
+    <a href="{{ route('eventsMembers.member',['id'=>$event->id]) }}" role="button" class="btn btn-primary">已有人报名，开始抽奖</a>
 
     <a href="javascript:history.go(-1);" role="button" class="btn btn-default">返回</a>
 

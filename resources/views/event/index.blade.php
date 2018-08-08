@@ -23,11 +23,15 @@
         <td>{{ $event->signup_num }}人</td>
         <td>{{ $event->is_prize==1?'已开奖':'未开奖' }}</td>
         <td>
+            @if(empty(\App\Models\EventMember::where([['member_id',\Illuminate\Support\Facades\Auth::user()->id],['events_id',$event->id]])->first()))
             <a href="{{ route('event_members.store',['id'=>$event->id]) }}" role="button" class="btn btn-primary">报名</a>
+            @else
+                <a href="#" role="button" class="btn btn-primary" disabled>已报名</a>
+            @endif
         </td>
         <td>
             <a href="{{ route('events.edit',[$event]) }}" role="button" class="btn btn-primary">编辑</a>
-            @if($event->is_prize == 0)
+            @if($event->is_prize == 0 && empty(\App\Models\EventMember::where([['member_id',\Illuminate\Support\Facades\Auth::user()->id],['events_id',$event->id]])->first()))
                 @if(empty(\App\Models\EventPrize::where('events_id',$event->id)->first()))
                     <a href="{{ route('prizes.index',['id'=>$event->id]) }}" role="button" class="btn btn-primary">没有奖品</a>
                 @else

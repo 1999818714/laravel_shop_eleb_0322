@@ -54,7 +54,9 @@
         <td colspan="9"><a href="{{ route('menus.create') }}"  role="button" class="btn btn-primary">添加菜品</a></td>
     </tr>
 </table>
-    {{ $menus->appends(['keyword'=>$keyword])->links() }}
+   @if(!$keyword)
+       {{ $menus->appends(['keyword'=>$keyword])->links() }}
+   @endif
 @endsection
 
 

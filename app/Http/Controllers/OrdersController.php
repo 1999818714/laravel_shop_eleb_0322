@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
 {
@@ -107,5 +108,20 @@ class OrdersController extends Controller
 
 
 
+    //超时自动取消订单
+    public function quxiao()
+    {
+        set_time_limit(0);//最大执行时间,一直跑
+        //死循环一直执行
+        while (true){
+            //当前时间->创建时间 = 15分钟
+            $time = time();
+            $date_time = date('Y-m-d H:i:s',$time-15*60);//获得超时时间
+            //and status=0 时才能执行sql2018-07-30 01:36:11   2018-08-06 16:36:58
+            DB::update("update `orders` set status=-1 WHERE created_at<'{$date_time}' and status=0");
+
+            sleep(10);
+        }
+    }
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\SphinxClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,25 @@ class MenusController extends Controller
         $keyword = '';
         if($request->keyword){
             $keyword = $request->keyword;
-            $menus = Menu::where('goods_name','like','%'.$keyword.'%')->paginate(5);//包含功能分页搜索
+//            $menus = Menu::where('goods_name','like','%'.$keyword.'%')->paginate(5);//包含功能分页搜索
+            //接下来是中文分词搜索
+            $cl = new SphinxClient();
+            $cl->SetServer ( '127.0.0.1', 9312);
+            $cl->SetConnectTimeout ( 10 );
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_EXTENDED2);
+            $cl->SetLimits(0, 1000);
+           $info = $keyword;//值传在这里
+            $menues = $cl->Query($info, 'menu');//menu这个是索引，要匹配#源定义source menu
+//            dd($menus);
+            $menu_id = [];
+            foreach ($menues['matches'] as $menu){
+                $menu_id[] = $menu['id'];
+            }
+            $menus = [];
+            foreach($menu_id as $id){
+                $menus[] = Menu::find($id);
+            }
         }else{
             $menus = Menu::paginate(5);//包含功能分页
         }

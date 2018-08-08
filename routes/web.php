@@ -37,6 +37,7 @@ Route::post('menus/upload','MenusController@upload')->name('menus.upload');//文
 Route::resource('orders','OrdersController');
 Route::get('/orders/{order}/status', 'OrdersController@status')->name('orders.status');//(-1:已取消,0:待支付,1:待发货,2:待确认,3:完成)
 Route::get('/index_day', 'OrdersController@index_day')->name('orders.index_day');//按日搜索
+Route::get('/quxiao', 'OrdersController@quxiao')->name('orders.quxiao');//按日搜索
 
 //订单商品表
 Route::resource('orderGoods','OrderGoodsController');
@@ -55,8 +56,10 @@ Route::post('/prizes','EventsController@prizesStore')->name('prizes.store');//�
 Route::get('/prizes/{prize}/edit','EventsController@prizesEdit')->name('prizes.edit');//修改活动奖品页面
 Route::patch('/prizes/{prize}','EventsController@prizesUpdate')->name('prizes.update');//修改活动奖品功能
 Route::delete('/prizes/{prize}','EventsController@prizesDestroy')->name('prizes.destroy');//删除活动奖品功能
+Route::get('/eventsMembers','EventsController@eventMember')->name('eventsMembers.member');//活动奖品报名抽奖功能
+
 //活动奖品表
-Route::resource('eventPrizes','EventPrizesController');
+//Route::resource('eventPrizes','EventPrizesController');
 //活动报名表
 Route::resource('eventMembers','EventMembersController');
 Route::get('event_members','EventMembersController@store')->name('event_members.store');
