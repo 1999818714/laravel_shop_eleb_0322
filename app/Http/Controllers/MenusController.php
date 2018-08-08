@@ -41,12 +41,16 @@ class MenusController extends Controller
             $menues = $cl->Query($info, 'menu');//menu这个是索引，要匹配#源定义source menu
 //            dd($menus);
             $menu_id = [];
-            foreach ($menues['matches'] as $menu){
-                $menu_id[] = $menu['id'];
-            }
-            $menus = [];
-            foreach($menu_id as $id){
-                $menus[] = Menu::find($id);
+            if(empty($menues['matches'])){//为空时
+                $menus = Menu::paginate(5);//包含功能分页
+            }else{//不为为空时
+                foreach ($menues['matches'] as $menu){
+                    $menu_id[] = $menu['id'];
+                }
+                $menus = [];
+                foreach($menu_id as $id){
+                    $menus[] = Menu::find($id);
+                }
             }
         }else{
             $menus = Menu::paginate(5);//包含功能分页
